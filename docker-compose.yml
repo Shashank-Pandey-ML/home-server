@@ -1,0 +1,35 @@
+services:
+  # Consul service for service discovery. When using Kubernetes this might not required as K8 
+  # internally support service discovery using Service resources.
+  consul:
+    image: consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+    volumes:
+      - ./discovery-service/consul.json:/consul/config/consul.json  # Mount custom configuration file
+    environment:
+      - CONSUL_LOCAL_CONFIG: |
+          {
+            "verify_incoming": false,
+            "verify_outgoing": false
+          }
+    command: "agent -dev -config-dir=/consul/config"  # Run Consul in development mode (use a production setup in real environments)
+
+  # Gateway service (written in Go using Gin)
+  gateway-service:
+    build:
+      context: ./gateway-service  # Build from the Gateway Service directory
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - consul  # Make sure Consul starts before the gateway
+    environment:
+      - CONSUL_HTTP_ADDR=consul:8500  # Point Gateway Service to the Consul service
+    networks:
+      - default  # Use the default network to connect with other services
+
+networks:
+  default:
+    driver: bridge
