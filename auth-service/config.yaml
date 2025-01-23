@@ -1,0 +1,39 @@
+service:
+  name: "auth"  # Name of the microservice
+  port: 8080              # Port number the service listens on
+  environment: "prod"  # Environment (e.g., dev, staging, prod)
+
+logging:
+  level: "info"           # Logging level (e.g., debug, info, warn, error)
+  format: "json"          # Log format (e.g., json, text)
+  output: "stdout"        # Log output (e.g., stdout, file)
+
+database:
+  type: "postgresql"      # Database type (e.g., postgresql, mysql)
+  host: "db.example.com"  # Database host
+  port: 5432              # Database port
+  name: "authDB"        # Database name
+  user: "postgres"         # Database user
+  password: "db_password" # Database password
+
+api:
+  base_url: "/api/v1"     # Base URL for the API
+  timeout: 30             # API timeout in seconds
+  max_retries: 3          # Maximum retries for API calls
+
+health:
+  endpoint: "/health"     # Endpoint for health checks
+  interval: 10            # Interval for health checks in seconds
+  timeout: 5              # Timeout for health checks in seconds
+
+security:
+  enable_tls: true        # Enable TLS for the service
+  cert_file: "/path/to/cert.pem" # Path to TLS certificate file
+  key_file: "/path/to/key.pem"   # Path to TLS key file
+  allowed_origins:        # CORS allowed origins
+    - "https://example.com"
+    - "https://another.com"
+
+feature_flags:
+  enable_feature_x: true  # Example feature flag
+  enable_feature_y: false # Another feature flag
