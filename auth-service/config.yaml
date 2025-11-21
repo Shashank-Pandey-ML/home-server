@@ -1,7 +1,7 @@
 service:
-  name: "auth"  # Name of the microservice
+  name: "auth"            # Name of the microservice
   port: 8080              # Port number the service listens on
-  environment: "prod"  # Environment (e.g., dev, staging, prod)
+  environment: "prod"     # Environment (e.g., dev, staging, prod)
 
 logging:
   level: "info"           # Logging level (e.g., debug, info, warn, error)
@@ -10,11 +10,10 @@ logging:
 
 database:
   type: "postgresql"      # Database type (e.g., postgresql, mysql)
-  host: "db.example.com"  # Database host
+  host: "postgres"        # Database host
   port: 5432              # Database port
-  name: "authDB"        # Database name
-  user: "postgres"         # Database user
-  password: "db_password" # Database password
+  name: "auth"            # Database name
+  user: "auth_user"       # Database user
 
 api:
   base_url: "/api/v1"     # Base URL for the API
@@ -29,11 +28,14 @@ health:
 security:
   enable_tls: true        # Enable TLS for the service
   cert_file: "/path/to/cert.pem" # Path to TLS certificate file
+  key_file: "/path/to/key.pem"   # Path to TLS private key file
+
+jwt:
+  access_token_duration: "30m"   # Access token lifetime
+  refresh_token_duration: "168h" # Refresh token lifetime (7 days)
+  issuer: "home-server-auth"     # JWT issuer
+  key_size: 2048                 # RSA key size for JWT signing
   key_file: "/path/to/key.pem"   # Path to TLS key file
   allowed_origins:        # CORS allowed origins
     - "https://example.com"
     - "https://another.com"
-
-feature_flags:
-  enable_feature_x: true  # Example feature flag
-  enable_feature_y: false # Another feature flag

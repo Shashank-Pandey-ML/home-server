@@ -1,0 +1,34 @@
+service:
+  name: "auth"
+  port: 8080
+  environment: "prod"
+
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+database:
+  type: "postgresql"
+  host: "localhost"
+  port: 5432
+  name: "authDB"
+  user: "postgres"
+
+api:
+  base_url: "/api/v1"
+  timeout: 30s
+  max_retries: 3
+
+health:
+  endpoint: "/health"
+  interval: 10s
+  timeout: 5s
+
+security:
+  enable_tls: true
+  cert_file: "certs/server.crt"
+  key_file: "certs/server.key"
+  allowed_origins:
+    - "https://example.com"
+    - "https://another.com"

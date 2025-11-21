@@ -1,5 +1,48 @@
-// Ignore log files
-*.log
 
-// Ignore .vscode
-.vscode
+
+# --- General ---
+.DS_Store
+*.swp
+*.tmp
+*.log
+*.out
+*.bak
+
+# --- Editor/IDE ---
+.vscode/
+.idea/
+*.code-workspace
+
+# --- Go build artifacts ---
+bin/
+**/bin/
+**/service
+**/main
+**/*.test
+coverage.out
+
+# --- Dependency directories ---
+ui-service/node_modules/
+ui-service/build/
+
+# --- Environment and config files ---
+.env
+**/.env
+**/*.env
+
+# --- Postgres and generated files ---
+postgres/
+postgres-data/
+**/postgres-data/
+
+# --- Docker ---
+*.tar
+docker-compose.override.yml
+
+# --- Service binaries ---
+auth-service/service
+gateway/service
+
+# --- Misc ---
+*.log.*
+*.pid
