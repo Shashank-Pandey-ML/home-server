@@ -1,54 +1,86 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 
 function NavBar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleNavClick = (e, target) => {
+        e.preventDefault();
+        const element = document.querySelector(target);
+        if (element) {
+            const offset = 70; // Height of fixed navbar
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+        setIsMenuOpen(false);
+    };
+
     return (
-        <nav class="custom-navbar" data-spy="affix" data-offset-top="20">
-            <div class="container">
-                <p class="logo">Shashank Pandey</p>         
-                <ul class="nav">
-                    <li class="item">
-                        {/* <a class="link" href="#home">Home</a> */}
-                        <Link className="link" to="/home">Home</Link>
+        <nav className={`custom-navbar ${isScrolled ? 'scrolled' : ''}`}>
+            <div className="container">
+                <a href="/" className="logo" onClick={(e) => handleNavClick(e, '#home')}>
+                    Shashank Pandey
+                </a>         
+                <ul className={`nav ${isMenuOpen ? 'active' : ''}`}>
+                    <li className="item">
+                        <a className="link" href="#home" onClick={(e) => handleNavClick(e, '#home')}>
+                            Home
+                        </a>
                     </li>
-                    <li class="item">
-                        {/* <a class="link" href="#about">About</a> */}
-                        <Link className="link" to="/about">About</Link>
+                    <li className="item">
+                        <a className="link" href="#about" onClick={(e) => handleNavClick(e, '#about')}>
+                            About
+                        </a>
                     </li>
-                    {/* <li class="item">
-                        <a class="link" href="#portfolio">Portfolio</a>
+                    <li className="item">
+                        <a className="link" href="#service" onClick={(e) => handleNavClick(e, '#service')}>
+                            Skills
+                        </a>
                     </li>
-                    <li class="item">
-                        <a class="link" href="#blog">Blog</a>
+                    <li className="item">
+                        <a className="link" href="#portfolio" onClick={(e) => handleNavClick(e, '#portfolio')}>
+                            Portfolio
+                        </a>
                     </li>
-                    <li class="item">
-                        <a class="link" href="#contact">Contact</a>
+                    <li className="item">
+                        <a className="link" href="#blog" onClick={(e) => handleNavClick(e, '#blog')}>
+                            Blog
+                        </a>
                     </li>
-                    <li class="item">
-                        <a class="link" href="#login">Login</a>
-                    </li> */}
+                    <li className="item">
+                        <a className="link" href="#contact" onClick={(e) => handleNavClick(e, '#contact')}>
+                            Contact
+                        </a>
+                    </li>
                 </ul>
-                {/* <a href="javascript:void(0)" id="nav-toggle" class="hamburger hamburger--elastic">
-                    <div class="hamburger-box">
-                    <div class="hamburger-inner"></div>
-                    </div>
-                </a> */}
-                <a
-                    href="#"
+                <button
+                    type="button"
                     id="nav-toggle"
-                    class={`hamburger hamburger--elastic ${isMenuOpen ? 'is-active' : ''}`}
+                    className={`hamburger hamburger--elastic ${isMenuOpen ? 'is-active' : ''}`}
                     onClick={toggleMenu}
-                    >
-                    <div class="hamburger-box">
-                        <div class="hamburger-inner"></div>
+                >
+                    <div className="hamburger-box">
+                        <div className="hamburger-inner"></div>
                     </div>
-                </a>
+                </button>
             </div>          
         </nav>
     );

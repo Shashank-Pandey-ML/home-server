@@ -1,8 +1,12 @@
 import React from 'react';
-import Login from '../components/Login';
 import NavBar from '../components/NavBar';
 import ProfileHeader from '../components/ProfileHeader';
 import About from '../components/About';
+import Skills from '../components/Skills';
+import Portfolio from '../components/Portfolio';
+import Blog from '../components/Blog';
+import ContactForm from '../components/ContactForm';
+import Contact from '../components/Contact';
 
 function Home() {
   return (
@@ -10,7 +14,11 @@ function Home() {
       <NavBar />
       <ProfileHeader />
       <About />
-      <Login />
+      <Skills />
+      <Portfolio />
+      <Blog />
+      <ContactForm />
+      <Contact />
     </div>
   );
 }

@@ -25,6 +25,9 @@ coverage.out
 ui-service/node_modules/
 ui-service/build/
 
+# --- UI build artifacts ---
+gateway/ui-build/
+
 # --- Environment and config files ---
 .env
 **/.env

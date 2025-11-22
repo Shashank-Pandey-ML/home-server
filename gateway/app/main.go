@@ -74,14 +74,15 @@ func main() {
 		api.Any("/camera/*path", handlers.CameraServiceProxy)
 	}
 
-	// Serve React UI - must be last to catch all non-API routes
-	// Profile page is public (default landing page)
-	router.GET("/", handlers.ServeReactApp())
-	router.GET("/profile", handlers.ServeReactApp())
-	router.GET("/profile/*path", handlers.ServeReactApp())
+	// Serve static files (CSS, JS, images) from React build
+	router.Static("/static", "./ui-build/static")
+	router.StaticFile("/favicon.ico", "./ui-build/favicon.ico")
+	router.StaticFile("/manifest.json", "./ui-build/manifest.json")
+	router.StaticFile("/logo192.png", "./ui-build/logo192.png")
+	router.StaticFile("/logo512.png", "./ui-build/logo512.png")
+	router.StaticFile("/robots.txt", "./ui-build/robots.txt")
 
-	// All other UI routes require authentication
-	router.Use(gateway_middleware.OptionalAuthMiddleware())
+	// Serve React app for all non-API routes (client-side routing)
 	router.NoRoute(handlers.ServeReactApp())
 
 	// Start the server

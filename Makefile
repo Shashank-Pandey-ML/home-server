@@ -7,7 +7,7 @@ GO_SERVICES=auth gateway common
 
 # Default target
 .PHONY: all
-all: up!
+all: build-ui up!
 
 .PHONY: init
 init:
@@ -20,7 +20,7 @@ up: init
 
 # Start Docker services with build (force rebuild)
 .PHONY: up!
-up!: init
+up!: build-ui init
 	docker compose -f docker-compose.yml up -d --build
 
 # Build all services
@@ -149,6 +149,7 @@ verify:
 .PHONY: clean
 clean:
 	rm -rf $(POSTGRES_INIT_DIR)
+	rm -rf gateway/ui-build
 
 # Clear all Docker images for services (DESTRUCTIVE!)
 .PHONY: clean-images
@@ -168,3 +169,9 @@ clean-logs:
 .PHONY: clean-all
 clean-all: clean-images clean clean-logs
 	@echo "🧹 Full cleanup completed"
+
+# UI Build Commands
+.PHONY: build-ui
+build-ui:
+	@echo "🎨 Building React UI..."
+	@./scripts/build-ui.sh

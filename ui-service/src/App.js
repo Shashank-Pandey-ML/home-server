@@ -2,7 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import LiveFeed from './pages/LiveFeed'
 import './App.css';
-import './styles.css'
+import './styles.css';
+import './custom-styles.css';
 
 function App() {
   return (

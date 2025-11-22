@@ -48,6 +48,9 @@ COPY --from=builder /app/gateway/service .
 # Copy configuration files (optional - can be mounted as volume)
 COPY gateway/config.yaml ./
 
+# Copy UI build files
+COPY gateway/ui-build ./ui-build
+
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app
 
