@@ -13,11 +13,11 @@ WORKDIR /app
 # Copy common module first (for local dependencies)
 COPY common/ ./common/
 
-# Copy auth-service files
-COPY auth-service/ ./auth-service/
+# Copy auth files
+COPY auth/ ./auth/
 
-# Set working directory to auth-service for build
-WORKDIR /app/auth-service
+# Set working directory to auth for build
+WORKDIR /app/auth
 
 # Download dependencies
 RUN go mod download
@@ -43,10 +43,10 @@ RUN addgroup -g 1001 -S appgroup && \
 WORKDIR /app
 
 # Copy the binary from builder stage
-COPY --from=builder /app/auth-service/service .
+COPY --from=builder /app/auth/service .
 
 # Copy configuration files (optional - can be mounted as volume)
-COPY auth-service/config.yaml ./
+COPY auth/config.yaml ./
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app

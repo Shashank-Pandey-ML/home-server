@@ -157,7 +157,14 @@ clean-images:
 	@docker compose -f docker-compose.yml down --rmi all 2>/dev/null || true
 	@echo "✅ Docker images cleared"
 
+# Clear all Docker logs
+.PHONY: clean-logs
+clean-logs:
+	@echo "🧼 Clearing Docker logs..."
+	rm -rf /tmp/home-server/*
+	@echo "✅ Docker logs cleared"
+
 # Full cleanup - stop services, remove volumes, images, and generated files (NUCLEAR!)
 .PHONY: clean-all
-clean-all: clean-images clean
+clean-all: clean-images clean clean-logs
 	@echo "🧹 Full cleanup completed"

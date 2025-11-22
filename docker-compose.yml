@@ -26,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./auth-service/.env
+      - ./gateway/.env
     volumes:
       - ./gateway/config.yaml:/app/config.yaml
       - /tmp/home-server/gateway:/app/logs/gateway
@@ -36,8 +36,8 @@ services:
   # Authentication service (written in Go)
   auth-service:
     build:
-      context: .  # Changed from ./auth-service to . (parent directory) to access common module
-      dockerfile: ./auth-service/Dockerfile  # Specify which Dockerfile to use
+      context: .  # Changed from ./auth to . (parent directory) to access common module
+      dockerfile: ./auth/Dockerfile  # Specify which Dockerfile to use
     container_name: auth-service
     restart: unless-stopped
     ports:
@@ -45,9 +45,9 @@ services:
     depends_on:
       - postgres
     env_file:
-      - ./auth-service/.env
+      - ./auth/.env
     volumes:
-      - ./auth-service/config.yaml:/app/config.yaml
+      - ./auth/config.yaml:/app/config.yaml
       - /tmp/home-server/auth:/app/logs/auth
     networks:
       - default
