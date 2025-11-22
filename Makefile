@@ -3,11 +3,11 @@ POSTGRES_INIT_DIR=postgres
 PYTHON_SCRIPT=generate_postgres_setup.py
 
 # Go services
-GO_SERVICES=auth-service gateway common
+GO_SERVICES=auth gateway common
 
 # Default target
 .PHONY: all
-all: up
+all: up!
 
 .PHONY: init
 init:
@@ -38,7 +38,7 @@ build-info:
 	@echo "Services using pre-built images:"
 	@docker compose -f docker-compose.yml config | grep -B 1 "image:" | grep -E "^  [a-zA-Z-]+:" | sed 's/://g' | sed 's/^  /  📦 /' || echo "  (none found)"
 
-# Build specific service - Usage: make build-auth-service, make build-gateway
+# Build specific service - Usage: make build-auth, make build-gateway
 # Note: Only works for services with Dockerfiles (not postgres which uses pre-built image)
 .PHONY: build-%
 build-%: init
@@ -73,23 +73,23 @@ down-volumes:
 stop:
 	docker compose -f docker-compose.yml stop
 
-# Start specific service - Usage: make postgres-up, make auth-service-up
+# Start specific service - Usage: make postgres-up, make auth-up
 .PHONY: %-up
 %-up: init
 	docker compose -f docker-compose.yml up -d $*
 
-# Stop specific service - Usage: make postgres-down, make auth-service-down
+# Stop specific service - Usage: make postgres-down, make auth-down
 .PHONY: %-down
 %-down:
 	docker compose -f docker-compose.yml stop $*
 	docker compose -f docker-compose.yml rm -f $*
 
-# Restart specific service - Usage: make postgres-restart, make auth-service-restart
+# Restart specific service - Usage: make postgres-restart, make auth-restart
 .PHONY: %-restart
 %-restart:
 	docker compose -f docker-compose.yml restart $*
 
-# View logs for specific service - Usage: make postgres-logs, make auth-service-logs
+# View logs for specific service - Usage: make postgres-logs, make auth-logs
 .PHONY: %-logs
 %-logs:
 	docker compose -f docker-compose.yml logs -f $*

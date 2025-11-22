@@ -51,7 +51,7 @@ def get_top_level_folders(base_dir):
         
     Example:
         >>> get_top_level_folders("/home/server")
-        ['/home/server/auth-service', '/home/server/gateway', '/home/server/ui-service']
+        ['/home/server/auth', '/home/server/gateway', '/home/server/ui-service']
     """
     return [
         os.path.join(base_dir, d)
@@ -146,10 +146,18 @@ if __name__ == "__main__":
         # Note: We use the actual password here, not a variable, because PostgreSQL's
         # docker-entrypoint-initdb.d doesn't expand environment variables in .sql files
         sql_entries.append(f"""-- Create DB and user for {service_name} service
-    CREATE DATABASE {db_name};
-    CREATE USER {db_user} WITH ENCRYPTED PASSWORD '{db_password}';
-    GRANT ALL PRIVILEGES ON DATABASE {db_name} TO {db_user};
-    """)
+        CREATE DATABASE {db_name};
+        CREATE USER {db_user} WITH ENCRYPTED PASSWORD '{db_password}';
+        GRANT ALL PRIVILEGES ON DATABASE {db_name} TO {db_user};
+
+        -- Grant schema permissions
+        \\c {db_name}
+        GRANT ALL ON SCHEMA public TO {db_user};
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {db_user};
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {db_user};
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {db_user};
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO {db_user};
+        """)
         sql_entries.append(f"")  # Add blank line for readability
 
         # Add corresponding environment variables for PostgreSQL container

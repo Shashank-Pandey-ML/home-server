@@ -36,11 +36,20 @@ func InitLogger(cfg config.LoggingConfig, serviceName string) error {
 	}
 
 	// Set encoder (json or console)
+	var encoderConfig zapcore.EncoderConfig
 	switch strings.ToLower(cfg.Format) {
 	case "json":
-		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+		encoderConfig = zap.NewProductionEncoderConfig()
+		encoderConfig.TimeKey = "timestamp"
+		encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+		encoderConfig.CallerKey = "caller"
+		encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+		encoder = zapcore.NewJSONEncoder(encoderConfig)
 	default:
-		encoder = zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		encoderConfig = zap.NewDevelopmentEncoderConfig()
+		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+		encoder = zapcore.NewConsoleEncoder(encoderConfig)
 	}
 
 	// Set output (stdout, stderr, or file)
@@ -67,7 +76,11 @@ func InitLogger(cfg config.LoggingConfig, serviceName string) error {
 
 	core := zapcore.NewCore(encoder, output, zapLevel)
 
-	Log = zap.New(core)
-	Log.Info("Zap logger initialized", zap.String("level", zapLevel.String()), zap.String("format", cfg.Format))
+	// Create logger with caller information
+	Log = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(0), zap.AddStacktrace(zapcore.ErrorLevel))
+	Log.Info("Zap logger initialized",
+		zap.String("level", zapLevel.String()),
+		zap.String("format", cfg.Format),
+		zap.String("service", serviceName))
 	return nil
 }

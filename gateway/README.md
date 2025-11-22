@@ -47,7 +47,7 @@ Contains HTTP handlers for:
 The gateway uses **Docker Compose DNS** for service discovery:
 
 1. Service name in docker-compose.yml becomes the hostname
-2. Example: `auth-service` is accessible at `http://auth-service:8080`
+2. Example: `auth-service` container is accessible at `http://auth-service:8080`
 3. Environment variables can override defaults:
    - `AUTH_SERVICE_HOST` (default: service name)
    - `AUTH_SERVICE_PORT` (default: 8080)
@@ -99,31 +99,13 @@ make gateway-restart
 
 ## Adding New Services
 
-1. Add service to `services/proxy.go` ServiceRegistry
-2. Create handler in `handlers/handlers.go`
-3. Register route in `routes/routes.go`
+1. Add service to `services/proxy.go` ServiceRegistry with port mapping
+2. Create handler in `handlers/handlers.go` that calls `services.ProxyRequest()`
+3. Register route in `app/main.go`
 
-Example:
-```go
-// In services/proxy.go
-var ServiceRegistry = map[string]string{
-    "new-service": "8080",
-}
+## Benefits
 
-// In handlers/handlers.go
-func NewServiceProxy(c *gin.Context) {
-    services.ProxyRequest("new-service", c)
-}
-
-// In routes/routes.go (in SetupRoutes function)
-router.Any("/newservice/*path", handlers.NewServiceProxy)
-```
-
-## Benefits of This Structure
-
-- **Separation of Concerns**: Each package has a single responsibility
-- **Maintainability**: Easy to find and modify specific functionality
-- **Testability**: Handlers and services can be unit tested independently
+- **Separation of Concerns**: Clean package organization
+- **Maintainability**: Easy to locate and modify functionality
 - **Scalability**: Simple to add new routes and services
-- **Readability**: Clean, organized code following Go best practices
-- **Consistency**: Matches auth-service structure for familiarity
+- **Consistency**: Matches auth service structure

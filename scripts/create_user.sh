@@ -44,10 +44,10 @@ fi
 
 # Insert user into database
 docker exec -i postgres psql -U postgres -d auth << EOF
-INSERT INTO users (email, password_hash, name, is_admin, created_at, updated_at)
+INSERT INTO users (email, password, name, is_admin, created_at, updated_at)
 VALUES ('$EMAIL', '$PASSWORD_HASH', '$NAME', $IS_ADMIN, NOW(), NOW())
 ON CONFLICT (email) DO UPDATE 
-SET password_hash = EXCLUDED.password_hash,
+SET password = EXCLUDED.password,
     name = EXCLUDED.name,
     is_admin = EXCLUDED.is_admin,
     updated_at = NOW();

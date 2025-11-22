@@ -37,7 +37,7 @@ func CameraServiceProxy(c *gin.Context) {
 
 // AuthServiceProxy proxies requests to the auth service
 func AuthServiceProxy(c *gin.Context) {
-	services.ProxyRequest("auth-service", c)
+	services.ProxyRequest("auth", c)
 }
 
 // FileServiceProxy proxies requests to the file service (future)

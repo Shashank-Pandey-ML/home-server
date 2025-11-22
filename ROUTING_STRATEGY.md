@@ -10,7 +10,7 @@ The gateway uses a clean separation between frontend (React UI) and backend (API
 ├─────────────────────────────────────────┤
 │  /                    → React UI        │
 │  /profile, /about     → React Router    │
-│  /api/v1/auth/*       → auth-service    │
+│  /api/v1/auth/*       → auth            │
 │  /api/v1/files/*      → file-service    │
 │  /api/v1/stats/*      → stats-service   │
 │  /health              → Gateway health  │
@@ -22,14 +22,14 @@ The gateway uses a clean separation between frontend (React UI) and backend (API
 ### 1. **Backend APIs** - All under `/api/v1`
 
 ```
-/api/v1/auth/*      → auth-service:8080
-/api/v1/files/*     → file-service:8080
-/api/v1/stats/*     → stats-service:8080
-/api/v1/camera/*    → camera-service:8080
+/api/v1/auth/*      → auth:8080
+/api/v1/files/*     → file:8080
+/api/v1/stats/*     → stats:8080
+/api/v1/camera/*    → camera:8080
 ```
 
 **Benefits:**
-- ✅ Consistent with auth-service pattern
+- ✅ Consistent with auth service pattern
 - ✅ Easy to add versioning (v2, v3)
 - ✅ Clear separation from UI routes
 - ✅ Industry standard convention
@@ -212,11 +212,11 @@ services:
   auth-service:
     build:
       context: .
-      dockerfile: ./auth-service/Dockerfile
+      dockerfile: ./auth/Dockerfile
     depends_on:
       - postgres
     env_file:
-      - ./auth-service/.env
+      - ./auth/.env
 
   ui-service:
     build: ./ui-service
@@ -251,8 +251,8 @@ services:
 
 ```
 1. React → POST http://localhost:8080/api/v1/auth/login
-2. Gateway → Matches /api/v1/auth/* → Proxy to auth-service
-3. auth-service → Validates credentials, returns JWT
+2. Gateway → Matches /api/v1/auth/* → Proxy to auth-service container
+3. auth service → Validates credentials, returns JWT
 4. Gateway → Returns response to React
 5. React → Stores JWT, redirects to /profile
 ```
@@ -264,7 +264,7 @@ services:
 2. No server request (SPA navigation)
 3. React → Renders Profile component
 4. Profile → Fetches data: GET /api/v1/auth/profile
-5. Gateway → Proxies to auth-service
+5. Gateway → Proxies to auth-service container
 6. Response → Displayed in UI
 ```
 

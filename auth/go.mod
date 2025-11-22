@@ -1,4 +1,4 @@
-module github.com/shashank/home-server/auth-service
+module github.com/shashank/home-server/auth
 
 go 1.24.4
 

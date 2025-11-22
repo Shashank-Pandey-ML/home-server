@@ -40,7 +40,7 @@ postgres-data/
 docker-compose.override.yml
 
 # --- Service binaries ---
-auth-service/service
+auth/service
 gateway/service
 
 # --- Misc ---

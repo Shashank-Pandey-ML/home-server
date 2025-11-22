@@ -27,7 +27,7 @@ var (
 	publicKeyExpiry     time.Time
 )
 
-// AuthMiddleware validates JWT tokens by calling the auth-service
+// AuthMiddleware validates JWT tokens by calling the auth
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Extract token from Authorization header

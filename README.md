@@ -43,7 +43,7 @@ The home server consists of multiple microservices communicating through an API 
 
 ```
 home-server/
-├── auth-service/          # Authentication microservice
+├── auth/                  # Authentication microservice
 ├── gateway/              # API gateway service
 ├── ui-service/           # React frontend application
 ├── discovery-service/    # Consul configuration
@@ -71,7 +71,7 @@ Create `.env` files for each service with required passwords and configuration:
 ```bash
 # Create environment files for services that need them
 touch postgres/.env
-touch auth-service/.env
+touch auth/.env
 touch gateway/.env
 ```
 
@@ -106,13 +106,13 @@ docker compose up -d
 
 1. **Set up Go workspace**:
    ```bash
-   go work use ./auth-service ./gateway ./common
+   go work use ./auth ./gateway ./common
    ```
 
 2. **Install dependencies**:
    ```bash
    # Go services
-   cd auth-service && go mod tidy
+   cd auth && go mod tidy
    cd ../gateway && go mod tidy
    cd ../common && go mod tidy
    
@@ -126,7 +126,7 @@ docker compose up -d
    docker compose up postgres -d
    
    # Run individual services
-   cd auth-service && go run app/main.go
+   cd auth && go run app/main.go
    cd gateway && go run app/main.go
    cd ui-service && npm start
    ```
@@ -153,7 +153,7 @@ make clean
 
 Each service uses YAML configuration files:
 
-- **Auth Service**: `auth-service/config.yaml`
+- **Auth Service**: `auth/config.yaml`
 - **Gateway**: `gateway/config.yaml`
 - **Common**: `common/config/config_template.yaml`
 

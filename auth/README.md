@@ -23,7 +23,7 @@ The Auth Service is responsible for:
 ## Project Structure
 
 ```
-auth-service/
+auth/
 ├── app/
 │   ├── main.go           # Application entry point
 ├── config.yaml           # Service configuration
@@ -46,7 +46,7 @@ The database is automatically initialized with:
 
 ## Environment Variables
 
-Create a `.env` file in the auth-service directory:
+Create a `.env` file in the auth directory:
 
 ```env
 # Database configuration
@@ -114,12 +114,12 @@ AUTH_ENVIRONMENT=prod
 
 1. **Build container**:
    ```bash
-   docker build -t auth-service .
+   docker build -t auth .
    ```
 
 2. **Run with Docker Compose** (from project root):
    ```bash
-   docker compose up auth-service -d
+   docker compose up auth -d
    ```
 
 ## Testing
@@ -201,12 +201,12 @@ The service provides a health check endpoint that reports:
 ### Docker Deployment
 ```bash
 # Build and run
-docker build -t auth-service .
+docker build -t auth .
 docker run -d \
-  --name auth-service \
+  --name auth \
   -p 8080:8080 \
   --env-file .env \
-  auth-service
+  auth
 ```
 
 ### Production Considerations

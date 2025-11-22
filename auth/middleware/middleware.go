@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/shashank/home-server/auth-service/services"
+	"github.com/shashank/home-server/auth/services"
 	"github.com/shashank/home-server/common/logging"
 )
 

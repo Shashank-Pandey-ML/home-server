@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/shashank/home-server/auth-service/handlers"
-	auth_middleware "github.com/shashank/home-server/auth-service/middleware"
-	"github.com/shashank/home-server/auth-service/services"
+	"github.com/shashank/home-server/auth/handlers"
+	auth_middleware "github.com/shashank/home-server/auth/middleware"
+	"github.com/shashank/home-server/auth/services"
 	"github.com/shashank/home-server/common/config"
 	"github.com/shashank/home-server/common/db"
 	"github.com/shashank/home-server/common/logging"
