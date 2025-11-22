@@ -16,23 +16,21 @@ import (
 	"github.com/shashank/home-server/common/models"
 )
 
-// Initialization function to set up the logger and dependencies
+// init initializes the gateway service configuration and logger
 func init() {
 	// Load the configuration
 	if err := config.LoadConfig("config.yaml"); err != nil {
 		// Log the error and panic if configuration loading fails
 		// This ensures that the application does not start with an invalid configuration.
-		panic(err)
+		panic(fmt.Sprintf("Failed to load configuration: %v", err))
 	}
 
 	// Initialize the logger with the configuration loaded from config.yaml
-	if err := logging.InitLogger(config.AppConfig.Logging); err != nil {
-		// This ensures that the application does not start without a valid logger.
-		logging.Log.Error("Failed to initialize logger", zap.Error(err))
-		panic(err)
+	if err := logging.InitLogger(config.AppConfig.Logging, config.AppConfig.Service.Name); err != nil {
+		panic(fmt.Sprintf("Failed to initialize logger: %v", err))
 	}
 
-	logging.Log.Info("Auth service initialization completed")
+	logging.Log.Info("Auth service initialization completed successfully")
 
 	// Initialize JWT keys after configuration is loaded
 	if err := services.InitializeJWTKeys(); err != nil {
@@ -92,7 +90,8 @@ func main() {
 
 	// Start the server
 	port := fmt.Sprintf(":%d", config.AppConfig.Service.Port)
-	logging.Log.Info("Starting auth service", zap.String("port", port))
+	logging.Log.Info("Starting auth service", zap.String("port", port),
+		zap.String("environment", config.AppConfig.Service.Environment))
 
 	if err := router.Run(port); err != nil {
 		logging.Log.Fatal("Failed to start auth service", zap.Error(err))

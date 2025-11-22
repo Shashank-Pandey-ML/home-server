@@ -27,15 +27,6 @@ var (
 	publicKey  *rsa.PublicKey
 )
 
-// JWTClaims represents the claims stored in JWT tokens
-type JWTClaims struct {
-	UserID  string `json:"user_id"`
-	Email   string `json:"email"`
-	IsAdmin bool   `json:"is_admin"`
-	Type    string `json:"type"` // "access" or "refresh"
-	jwt.RegisteredClaims
-}
-
 type AuthService struct {
 	userRepo *db.UserRepository
 }
@@ -113,11 +104,11 @@ func GenerateTokenPair(user *models.User) (accessToken, refreshToken string, exp
 	issuer := config.AppConfig.JWT.Issuer
 
 	// Generate access token
-	accessClaims := JWTClaims{
+	accessClaims := models.JWTClaims{
 		UserID:  strconv.Itoa(int(user.ID)),
 		Email:   user.Email,
 		IsAdmin: user.IsAdmin,
-		Type:    "access",
+		Type:    models.TokenTypeAccess,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    issuer,
 			Subject:   strconv.Itoa(int(user.ID)),
@@ -134,11 +125,11 @@ func GenerateTokenPair(user *models.User) (accessToken, refreshToken string, exp
 	}
 
 	// Generate refresh token
-	refreshClaims := JWTClaims{
+	refreshClaims := models.JWTClaims{
 		UserID:  strconv.Itoa(int(user.ID)),
 		Email:   user.Email,
 		IsAdmin: user.IsAdmin,
-		Type:    "refresh",
+		Type:    models.TokenTypeRefresh,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    issuer,
 			Subject:   strconv.Itoa(int(user.ID)),
@@ -164,8 +155,8 @@ func GenerateTokenPair(user *models.User) (accessToken, refreshToken string, exp
 }
 
 // validateJWTToken validates and parses a JWT token
-func ValidateJWTToken(tokenString string) (*JWTClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+func ValidateJWTToken(tokenString string) (*models.JWTClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate signing method
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -177,13 +168,13 @@ func ValidateJWTToken(tokenString string) (*JWTClaims, error) {
 		return nil, fmt.Errorf("failed to parse token: %w", err)
 	}
 
-	claims, ok := token.Claims.(*JWTClaims)
+	claims, ok := token.Claims.(*models.JWTClaims)
 	if !ok || !token.Valid {
 		return nil, errors.New("invalid token claims")
 	}
 
 	// Validate token type (should be "access" for API requests)
-	if claims.Type != "access" {
+	if claims.Type != models.TokenTypeAccess {
 		return nil, errors.New("invalid token type")
 	}
 
@@ -222,7 +213,7 @@ func (s *AuthService) validateUserCredentials(ctx context.Context, email, passwo
 
 // validateRefreshToken validates a refresh token and returns the user
 func (s *AuthService) ValidateRefreshToken(ctx context.Context, tokenString string) (*models.User, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
@@ -233,13 +224,13 @@ func (s *AuthService) ValidateRefreshToken(ctx context.Context, tokenString stri
 		return nil, fmt.Errorf("failed to parse refresh token: %w", err)
 	}
 
-	claims, ok := token.Claims.(*JWTClaims)
+	claims, ok := token.Claims.(*models.JWTClaims)
 	if !ok || !token.Valid {
 		return nil, errors.New("invalid refresh token claims")
 	}
 
 	// Validate token type (should be "refresh")
-	if claims.Type != "refresh" {
+	if claims.Type != models.TokenTypeRefresh {
 		return nil, errors.New("invalid token type for refresh")
 	}
 

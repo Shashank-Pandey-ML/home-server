@@ -29,11 +29,6 @@ api:
   timeout: 30s
   max_retries: 3
 
-health:
-  endpoint: "/health"
-  interval: 10s
-  timeout: 5s
-
 security:
   enable_tls: true
   cert_file: "certs/server.crt"

@@ -122,21 +122,3 @@ func RequestLoggingMiddleware() gin.HandlerFunc {
 		Output: nil, // We handle logging ourselves
 	})
 }
-
-// HealthCheckMiddleware provides a simple health check response
-// This can be used by services that don't need custom health logic
-func HealthCheckMiddleware() gin.HandlerFunc {
-	return gin.HandlerFunc(func(c *gin.Context) {
-		if c.Request.URL.Path == config.AppConfig.Health.Endpoint {
-			c.JSON(http.StatusOK, gin.H{
-				"status":    "healthy",
-				"service":   config.AppConfig.Service.Name,
-				"timestamp": time.Now().UTC().Format(time.RFC3339),
-				"version":   "1.0.0",
-			})
-			c.Abort()
-			return
-		}
-		c.Next()
-	})
-}

@@ -17,18 +17,21 @@ services:
   #   command: "agent -dev -config-dir=/consul/config"  # Run Consul in development mode (use a production setup in real environments)
 
   # Gateway service (written in Go using Gin)
-  # gateway-service:
-  #   build:
-  #     context: ./gateway-service  # Build from the Gateway Service directory
-  #   container_name: gateway-service
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - consul  # Make sure Consul starts before the gateway
-  #   environment:
-  #     - CONSUL_HTTP_ADDR=consul:8500  # Point Gateway Service to the Consul service
-  #   networks:
-  #     - default  # Use the default network to connect with other services
+  gateway-service:
+    build:
+      context: .  # Build from the Gateway Service directory
+      dockerfile: ./gateway/Dockerfile  # Build from the Gateway Service directory
+    container_name: gateway-service
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./auth-service/.env
+    volumes:
+      - ./gateway/config.yaml:/app/config.yaml
+      - /tmp/home-server/gateway:/app/logs/gateway
+    networks:
+      - default
 
   # Authentication service (written in Go)
   auth-service:
@@ -45,6 +48,7 @@ services:
       - ./auth-service/.env
     volumes:
       - ./auth-service/config.yaml:/app/config.yaml
+      - /tmp/home-server/auth:/app/logs/auth
     networks:
       - default
 

@@ -143,9 +143,11 @@ if __name__ == "__main__":
             exit(1)
 
         # Generate SQL commands for database and user creation
+        # Note: We use the actual password here, not a variable, because PostgreSQL's
+        # docker-entrypoint-initdb.d doesn't expand environment variables in .sql files
         sql_entries.append(f"""-- Create DB and user for {service_name} service
     CREATE DATABASE {db_name};
-    CREATE USER {db_user} WITH ENCRYPTED PASSWORD '${{{password_var_in_psql}}}';
+    CREATE USER {db_user} WITH ENCRYPTED PASSWORD '{db_password}';
     GRANT ALL PRIVILEGES ON DATABASE {db_name} TO {db_user};
     """)
         sql_entries.append(f"")  # Add blank line for readability

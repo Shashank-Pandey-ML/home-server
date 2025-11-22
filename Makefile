@@ -2,6 +2,9 @@
 POSTGRES_INIT_DIR=postgres
 PYTHON_SCRIPT=generate_postgres_setup.py
 
+# Go services
+GO_SERVICES=auth-service gateway common
+
 # Default target
 .PHONY: all
 all: up
@@ -95,6 +98,52 @@ stop:
 .PHONY: postgres-login
 postgres-login:
 	docker exec -it postgres psql -U postgres
+
+# Create a new user
+.PHONY: create-user
+create-user:
+	@./scripts/create_user.sh
+
+# List all users
+.PHONY: list-users
+list-users:
+	@./scripts/list_users.sh
+
+# Go module management
+.PHONY: tidy
+tidy:
+	@echo "📦 Running go mod tidy for all Go services..."
+	@for service in $(GO_SERVICES); do \
+		if [ -f $$service/go.mod ]; then \
+			echo "  ✅ Tidying $$service..."; \
+			cd $$service && go mod tidy && cd ..; \
+		fi \
+	done
+	@echo "✨ All Go modules tidied"
+
+# Download Go dependencies for all services
+.PHONY: deps
+deps:
+	@echo "📥 Downloading Go dependencies..."
+	@for service in $(GO_SERVICES); do \
+		if [ -f $$service/go.mod ]; then \
+			echo "  ⬇️  Downloading $$service dependencies..."; \
+			cd $$service && go mod download && cd ..; \
+		fi \
+	done
+	@echo "✅ All dependencies downloaded"
+
+# Verify Go modules
+.PHONY: verify
+verify:
+	@echo "🔍 Verifying Go modules..."
+	@for service in $(GO_SERVICES); do \
+		if [ -f $$service/go.mod ]; then \
+			echo "  🔎 Verifying $$service..."; \
+			cd $$service && go mod verify && cd ..; \
+		fi \
+	done
+	@echo "✅ All modules verified"
 
 # Remove generated files
 .PHONY: clean

@@ -2,16 +2,16 @@ service:
   name: "gateway"         # Name of the microservice
   port: 8080              # Port number the service listens on
   environment: "prod"     # Environment (e.g., dev, staging, prod)
-  deployment_mode: "docker-compose" # The deployment mode (e.g. docker-compose, kubernetes)
 
 logging:
-  level: "debug"           # Logging level (e.g., debug, info, warn, error)
-  output: "file"        # Log output (e.g., stdout, file)
+  level: "info"           # Logging level (e.g., debug, info, warn, error)
+  format: "json"          # Log format (e.g., json, text)
+  output: "file"          # Log output (e.g., stdout, file)
 
 api:
+  base_url: "/api/v1"     # Base URL for the API
   timeout: 30             # API timeout in seconds
   max_retries: 3          # Maximum retries for API calls
-  retry_delay: 2          # Retry delay in seconds
 
 security:
   enable_tls: true        # Enable TLS for the service

@@ -6,7 +6,7 @@ service:
 logging:
   level: "info"           # Logging level (e.g., debug, info, warn, error)
   format: "json"          # Log format (e.g., json, text)
-  output: "stdout"        # Log output (e.g., stdout, file)
+  output: "file"          # Log output (e.g., stdout, file)
 
 database:
   type: "postgresql"      # Database type (e.g., postgresql, mysql)
@@ -14,16 +14,12 @@ database:
   port: 5432              # Database port
   name: "auth"            # Database name
   user: "auth_user"       # Database user
+  ssl_mode: "disable"     # SSL mode: disable, require, verify-ca, verify-full
 
 api:
   base_url: "/api/v1"     # Base URL for the API
   timeout: 30             # API timeout in seconds
   max_retries: 3          # Maximum retries for API calls
-
-health:
-  endpoint: "/health"     # Endpoint for health checks
-  interval: 10            # Interval for health checks in seconds
-  timeout: 5              # Timeout for health checks in seconds
 
 security:
   enable_tls: true        # Enable TLS for the service

@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/shashank/home-server/common v0.0.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.32.0

@@ -13,11 +13,11 @@ import (
 var Log *zap.Logger
 
 const (
-	DEFAULT_LOG_DIR       = "/var/log/home-server/"
+	DEFAULT_LOG_DIR       = "/app/logs"
 	DEFAULT_LOG_FILE_NAME = "app.log"
 )
 
-func InitLogger(cfg config.LoggingConfig) error {
+func InitLogger(cfg config.LoggingConfig, serviceName string) error {
 	var encoder zapcore.Encoder
 	var zapLevel zapcore.Level
 
@@ -51,10 +51,11 @@ func InitLogger(cfg config.LoggingConfig) error {
 	case "stderr":
 		output = zapcore.Lock(os.Stderr)
 	case "file":
-		if err := os.MkdirAll(DEFAULT_LOG_DIR, 0755); err != nil {
+		LOG_DIR := DEFAULT_LOG_DIR + "/" + serviceName
+		if err := os.MkdirAll(LOG_DIR, 0755); err != nil {
 			return fmt.Errorf("could not create log directory: %w", err)
 		}
-		logPath := fmt.Sprintf("%s/app.log", DEFAULT_LOG_DIR)
+		logPath := fmt.Sprintf("%s/app.log", LOG_DIR)
 		file, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			return fmt.Errorf("could not open log file: %w", err)

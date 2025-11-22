@@ -26,7 +26,6 @@ The Auth Service is responsible for:
 auth-service/
 ├── app/
 │   ├── main.go           # Application entry point
-│   └── main              # Compiled binary
 ├── config.yaml           # Service configuration
 ├── Dockerfile            # Container configuration
 ├── go.mod               # Go module dependencies

@@ -41,13 +41,6 @@ type APIConfig struct {
 	MaxRetries int           `mapstructure:"max_retries"` // Number of retry attempts for failed requests.
 }
 
-// HealthConfig controls the service's health check behavior.
-type HealthConfig struct {
-	Endpoint string        `mapstructure:"endpoint"` // Endpoint used for health checks (e.g., "/health").
-	Interval time.Duration `mapstructure:"interval"` // Interval between health checks (e.g., "10s").
-	Timeout  time.Duration `mapstructure:"timeout"`  // Timeout for a health check request (e.g., "5s").
-}
-
 // SecurityConfig defines security-related settings such as TLS and CORS.
 type SecurityConfig struct {
 	EnableTLS bool   `mapstructure:"enable_tls"` // If true, TLS is enabled; requires cert and key files.
@@ -71,7 +64,6 @@ type Config struct {
 	Logging  LoggingConfig  `mapstructure:"logging"`  // Logging configuration.
 	Database DatabaseConfig `mapstructure:"database"` // Database connection settings.
 	API      APIConfig      `mapstructure:"api"`      // API-related configuration.
-	Health   HealthConfig   `mapstructure:"health"`   // Health check configuration.
 	Security SecurityConfig `mapstructure:"security"` // Security/TLS/CORS configuration.
 	JWT      JWTConfig      `mapstructure:"jwt"`      // JWT authentication configuration.
 }
@@ -118,19 +110,18 @@ func setDefaults() {
 
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("logging.format", "json")
-	viper.SetDefault("logging.output", "/var/log/app.log")
+	viper.SetDefault("logging.output", "stdout")
 
 	viper.SetDefault("api.base_url", "/api/v1")
 	viper.SetDefault("api.timeout", "30s")
 	viper.SetDefault("api.max_retries", 3)
 
-	viper.SetDefault("health.endpoint", "/health")
-	viper.SetDefault("health.interval", "10s")
-	viper.SetDefault("health.timeout", "5s")
-
 	viper.SetDefault("security.enable_tls", true)
 	viper.SetDefault("security.cert_file", "cert.pem")
 	viper.SetDefault("security.key_file", "key.pem")
+
+	// Database defaults
+	viper.SetDefault("database.ssl_mode", "disable")
 
 	// JWT defaults
 	viper.SetDefault("jwt.access_token_duration", "30m")

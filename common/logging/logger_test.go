@@ -13,7 +13,7 @@ func TestInitLogger(t *testing.T) {
 		Output: "stdout",
 	}
 
-	err := InitLogger(cfg)
+	err := InitLogger(cfg, "test-service")
 	if err != nil {
 		t.Fatalf("InitLogger failed: %v", err)
 	}
