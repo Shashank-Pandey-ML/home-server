@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"gateway/services"
 
@@ -10,9 +11,14 @@ import (
 
 // HealthHandler returns the health status of the gateway
 func HealthHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Gateway is healthy",
-	})
+	status := gin.H{
+		"status":    "healthy",
+		"service":   "gateway",
+		"timestamp": time.Now().UTC().Format(time.RFC3339),
+		"version":   "1.0.0",
+	}
+
+	c.JSON(http.StatusOK, status)
 }
 
 // RedirectToProfile redirects the root path to /profile

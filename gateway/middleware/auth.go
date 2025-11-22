@@ -27,6 +27,24 @@ var (
 	publicKeyExpiry     time.Time
 )
 
+// ConditionalAuthMiddleware validates JWT tokens except for whitelisted paths
+func ConditionalAuthMiddleware(publicPaths []string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Check if current path is in the public paths list
+		currentPath := c.Request.URL.Path
+		for _, path := range publicPaths {
+			if currentPath == path {
+				// Skip authentication for this path
+				c.Next()
+				return
+			}
+		}
+
+		// Apply normal authentication for all other paths
+		AuthMiddleware()(c)
+	}
+}
+
 // AuthMiddleware validates JWT tokens by calling the auth
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

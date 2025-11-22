@@ -55,35 +55,23 @@ func main() {
 	// API routes - All backend microservices under /api/v1
 	api := router.Group(config.AppConfig.API.BaseURL)
 	{
-		// Auth service routes (public - no auth required)
-		auth := api.Group("/auth")
-		{
-			auth.POST("/login", handlers.AuthServiceProxy)
-			auth.GET("/public-key", handlers.AuthServiceProxy)
-		}
+		// Conditional auth middleware - skips auth for specific public endpoints
+		api.Use(gateway_middleware.ConditionalAuthMiddleware([]string{
+			"/api/v1/auth/login",
+			// "/api/v1/auth/public-key",
+		}))
 
-		// Protected routes - require authentication
-		protected := api.Group("")
-		protected.Use(gateway_middleware.AuthMiddleware())
-		{
-			// User management routes (protected)
-			users := protected.Group("/users")
-			{
-				users.POST("/logout", handlers.AuthServiceProxy)
-				users.POST("/refresh", handlers.AuthServiceProxy)
-				users.GET("/profile", handlers.AuthServiceProxy)
-				users.PUT("/profile", handlers.AuthServiceProxy)
-			}
+		// Auth service routes (all under /auth/*)
+		api.Any("/auth/*path", handlers.AuthServiceProxy)
 
-			// Stats service routes (protected)
-			protected.Any("/stats/*path", handlers.StatsServiceProxy)
+		// Stats service routes (protected)
+		api.Any("/stats/*path", handlers.StatsServiceProxy)
 
-			// File service routes (protected - future)
-			protected.Any("/files/*path", handlers.FileServiceProxy)
+		// File service routes (protected - future)
+		api.Any("/files/*path", handlers.FileServiceProxy)
 
-			// Camera service routes (protected)
-			protected.Any("/camera/*path", handlers.CameraServiceProxy)
-		}
+		// Camera service routes (protected)
+		api.Any("/camera/*path", handlers.CameraServiceProxy)
 	}
 
 	// Serve React UI - must be last to catch all non-API routes

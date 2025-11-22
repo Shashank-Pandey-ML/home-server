@@ -66,25 +66,25 @@ func main() {
 	// Health check endpoint
 	router.GET("/health", healthCheckHandler.HealthCheckHandler)
 
-	// Authentication routes
+	// Authentication routes - all under /api/v1/auth
 	api := router.Group(config.AppConfig.API.BaseURL)
 	{
 		auth := api.Group("/auth")
 		{
+			// Public routes
 			auth.POST("/login", authHandler.LoginHandler)
-
-			// Public key endpoint for gateway service
 			auth.GET("/public-key", authHandler.GetPublicKeyHandler)
-		}
 
-		// User management routes (protected)
-		users := api.Group("/users")
-		users.Use(auth_middleware.JwtAuthMiddleware())
-		{
-			auth.POST("/logout", authHandler.LogoutHandler)
-			auth.POST("/refresh", authHandler.RefreshHandler)
-			users.GET("/profile", authHandler.GetUserProfileHandler)
-			users.PUT("/profile", authHandler.UpdateUserProfileHandler)
+			// Protected routes
+			authProtected := auth.Use(auth_middleware.JwtAuthMiddleware())
+			{
+				authProtected.POST("/logout", authHandler.LogoutHandler)
+				authProtected.POST("/refresh", authHandler.RefreshHandler)
+
+				// User management routes under /auth/users/*
+				authProtected.GET("/users/profile", authHandler.GetUserProfileHandler)
+				authProtected.PUT("/users/profile", authHandler.UpdateUserProfileHandler)
+			}
 		}
 	}
 

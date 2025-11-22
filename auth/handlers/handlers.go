@@ -41,11 +41,6 @@ type RefreshRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
-// LogoutRequest represents the JSON payload for logout requests
-type LogoutRequest struct {
-	RefreshToken string `json:"refresh_token" binding:"required"`
-}
-
 // AuthHandler handles authentication-related requests
 type AuthHandler struct {
 	authService *services.AuthService
@@ -98,18 +93,6 @@ func (h *AuthHandler) LoginHandler(c *gin.Context) {
 
 // logoutHandler handles user logout and token invalidation
 func (h *AuthHandler) LogoutHandler(c *gin.Context) {
-	var req LogoutRequest
-
-	// Bind and validate the request body
-	if err := c.ShouldBindJSON(&req); err != nil {
-		logging.Log.Warn("Invalid logout request", zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "Invalid request format",
-			"details": err.Error(),
-		})
-		return
-	}
-
 	// Extract user info from JWT context (set by middleware)
 	userIdStr, exists := c.Get("user_id")
 	if !exists {
@@ -121,7 +104,7 @@ func (h *AuthHandler) LogoutHandler(c *gin.Context) {
 	}
 
 	userID, _ := strconv.ParseUint(userIdStr.(string), 10, 64)
-	err := h.authService.Logout(c.Request.Context(), req.RefreshToken, uint(userID))
+	err := h.authService.Logout(c.Request.Context(), uint(userID))
 	if err != nil {
 		logging.Log.Error("Failed to logout user",
 			zap.String("user_id", userIdStr.(string)),

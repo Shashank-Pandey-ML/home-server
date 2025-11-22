@@ -76,21 +76,20 @@ func (s *AuthService) Login(ctx context.Context, email, password string) (string
 }
 
 // Logout handles user logout and token invalidation
-func (s *AuthService) Logout(ctx context.Context, refreshToken string, userID uint) error {
-	// We use Stateless JWT (most common in microservices). Here Backend does not store the token at all.
-	// If you go purely stateless with JWTs, then there is no real “logout” on the backend — because the
-	// backend never stores or tracks tokens. Once issued, the JWT is valid until it expires.
+func (s *AuthService) Logout(ctx context.Context, userID uint) error {
+	// We use Stateless JWT (most common in microservices). The backend does not store tokens.
+	// With stateless JWTs, there is no real "logout" on the backend — the JWT remains valid until expiration.
+	//
+	// For true logout functionality, you would need to:
+	// 1. Implement a token blacklist (store invalidated tokens in Redis/DB until expiry)
+	// 2. Use short-lived access tokens (15-30 minutes) to minimize exposure
+	// 3. Client-side: remove tokens from storage immediately
+	//
+	// For now, this is a no-op that logs the logout event.
 
-	// We invalidate the refresh token
-	err := s.InvalidateRefreshToken(ctx, refreshToken, userID)
-	if err != nil {
-		logging.Log.Error("Failed to invalidate refresh token",
-			zap.Uint("user_id", userID),
-			zap.Error(err))
-		return err
-	}
+	logging.Log.Info("User logout processed (stateless JWT - token remains valid until expiry)",
+		zap.Uint("user_id", userID))
 
-	// Invalidate the refresh token
 	return nil
 }
 

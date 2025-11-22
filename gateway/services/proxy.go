@@ -30,9 +30,10 @@ func ProxyRequest(serviceName string, c *gin.Context) {
 	targetPort := getServicePort(serviceName)
 
 	// Build the target URL using Docker Compose DNS
-	path := c.Param("path")
-	if path == "" {
-		path = "/"
+	// Use the full request path including query parameters
+	path := c.Request.URL.Path
+	if c.Request.URL.RawQuery != "" {
+		path += "?" + c.Request.URL.RawQuery
 	}
 	targetURL := fmt.Sprintf("http://%s:%s%s", targetHost, targetPort, path)
 
@@ -102,7 +103,7 @@ func getServiceHost(serviceName string) string {
 		return host
 	}
 	// Docker Compose DNS: service name is the hostname
-	return serviceName
+	return serviceName + "-service"
 }
 
 // getServicePort returns the port for the service
