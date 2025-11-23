@@ -1,0 +1,22 @@
+service:
+  name: "stats"         # Name of the microservice
+  port: 8080              # Port number the service listens on
+  environment: "prod"     # Environment (e.g., dev, staging, prod)
+
+logging:
+  level: "info"           # Logging level (e.g., debug, info, warn, error)
+  format: "json"          # Log format (e.g., json, text)
+  output: "file"          # Log output (e.g., stdout, file)
+
+api:
+  base_url: "/api/v1"     # Base URL for the API
+  timeout: 30             # API timeout in seconds
+  max_retries: 3          # Maximum retries for API calls
+
+security:
+  enable_tls: true        # Enable TLS for the service
+  cert_file: "/path/to/cert.pem" # Path to TLS certificate file
+  key_file: "/path/to/key.pem"   # Path to TLS key file
+  allowed_origins:        # CORS allowed origins
+    - "https://example.com"
+    - "https://another.com"

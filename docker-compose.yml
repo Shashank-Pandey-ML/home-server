@@ -30,6 +30,9 @@ services:
     volumes:
       - ./gateway/config.yaml:/app/config.yaml
       - /tmp/home-server/gateway:/app/logs/gateway
+    depends_on:
+      - auth-service
+      - stats-service
     networks:
       - default
 
@@ -49,6 +52,30 @@ services:
     volumes:
       - ./auth/config.yaml:/app/config.yaml
       - /tmp/home-server/auth:/app/logs/auth
+    networks:
+      - default
+
+  # Stats service (written in Go) - collects system metrics
+  stats-service:
+    build:
+      context: .
+      dockerfile: ./stats/Dockerfile
+    container_name: stats-service
+    restart: unless-stopped
+    ports:
+      - "8082:8080"  # Internal only, accessed via gateway
+    volumes:
+      # Mount host system paths for stats collection (read-only for security)
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/hostname:/host/etc/hostname:ro
+      # - /:/hostfs:ro              # to read /etc/*, /var, etc if needed
+    environment:
+      - HOST_PROC=/host/proc
+      - HOST_SYS=/host/sys
+      - HOST_ROOT=/hostfs
+      - PORT=8080
     networks:
       - default
 

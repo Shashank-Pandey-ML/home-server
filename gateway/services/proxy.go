@@ -15,10 +15,9 @@ import (
 
 // ServiceRegistry holds the service name to port mapping
 var ServiceRegistry = map[string]string{
-	"profile":      "8080",
-	"stats":        "8080",
 	"camera":       "8080",
 	"auth":         "8080",
+	"stats":        "8080",
 	"file-service": "8080",
 	"ui-service":   "3000", // React dev server or production build server
 }

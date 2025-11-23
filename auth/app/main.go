@@ -24,6 +24,9 @@ func init() {
 		// This ensures that the application does not start with an invalid configuration.
 		panic(fmt.Sprintf("Failed to load configuration: %v", err))
 	}
+	if config.AppConfig.Database.Password == "" {
+		panic("DB_PASSWORD environment variable is not set")
+	}
 
 	// Initialize the logger with the configuration loaded from config.yaml
 	if err := logging.InitLogger(config.AppConfig.Logging, config.AppConfig.Service.Name); err != nil {

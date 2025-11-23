@@ -93,11 +93,7 @@ func LoadConfig(configPath string) error {
 	}
 
 	// Load secrets from environment variable
-	dbPassword := os.Getenv("DB_PASSWORD")
-	if dbPassword == "" {
-		return fmt.Errorf("DB_PASSWORD environment variable is not set")
-	}
-	cfg.Database.Password = dbPassword
+	cfg.Database.Password = os.Getenv("DB_PASSWORD")
 
 	AppConfig = &cfg
 	return nil

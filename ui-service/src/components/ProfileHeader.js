@@ -1,4 +1,8 @@
+import { useAuth } from '../context/AuthContext';
+
 function ProfileHeader() {
+    const { user } = useAuth();
+    
     const handleScrollToPortfolio = (e) => {
         e.preventDefault();
         const element = document.querySelector('#portfolio');
@@ -20,7 +24,7 @@ function ProfileHeader() {
             <div className="header-content container">
                 <h1 className="header-title">
                     <span className="up">HI!</span>
-                    <span className="down">I am Shashank Pandey</span>
+                    <span className="down">{user ? 'Welcome Shashank!' : 'I am Shashank Pandey'}</span>
                 </h1>
                 <p className="header-subtitle">BACKEND DEVELOPER</p>            
                 <button 

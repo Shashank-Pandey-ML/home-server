@@ -3,7 +3,7 @@ POSTGRES_INIT_DIR=postgres
 PYTHON_SCRIPT=generate_postgres_setup.py
 
 # Go services
-GO_SERVICES=auth gateway common
+GO_SERVICES=auth gateway stats common
 
 # Default target
 .PHONY: all

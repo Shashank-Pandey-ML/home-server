@@ -61,11 +61,11 @@ func main() {
 			// "/api/v1/auth/public-key",
 		}))
 
+		// Stats service routes (proxied to stats-service)
+		api.Any("/stats", handlers.StatsServiceProxy)
+
 		// Auth service routes (all under /auth/*)
 		api.Any("/auth/*path", handlers.AuthServiceProxy)
-
-		// Stats service routes (protected)
-		api.Any("/stats/*path", handlers.StatsServiceProxy)
 
 		// File service routes (protected - future)
 		api.Any("/files/*path", handlers.FileServiceProxy)
