@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"gateway/services"
@@ -44,7 +45,18 @@ func StatsServiceProxy(c *gin.Context) {
 // ServeReactApp serves the React SPA from the build directory
 func ServeReactApp() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Serve index.html for all routes (client-side routing)
-		c.File("./ui-build/index.html")
+		path := c.Request.URL.Path
+		if strings.HasPrefix(path, "/an") {
+			// If it's a static asset (file extension), 404
+			if strings.Contains(path, ".") {
+				c.Status(http.StatusNotFound)
+				return
+			}
+			// Otherwise, serve index.html for SPA routing
+			c.File("./ui-build/index.html")
+			return
+		}
+		// For anything else that's not API, 404
+		c.Status(http.StatusNotFound)
 	}
 }

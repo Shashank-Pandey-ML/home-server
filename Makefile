@@ -9,6 +9,53 @@ GO_SERVICES=auth gateway stats common
 .PHONY: all
 all: build-ui up!
 
+# Help target - show available commands
+.PHONY: help
+help:
+	@echo "📚 Home Server Makefile Commands"
+	@echo ""
+	@echo "🚀 Quick Start:"
+	@echo "  make all              - Build UI and start all services (default)"
+	@echo "  make up               - Start all services (without rebuild)"
+	@echo "  make up!              - Build UI and start all services (force rebuild)"
+	@echo "  make down             - Stop all services (keeps data)"
+	@echo ""
+	@echo "🔨 Build Commands:"
+	@echo "  make build            - Build all services"
+	@echo "  make build-ui         - Build React UI"
+	@echo "  make build-gateway    - Build gateway service"
+	@echo "  make build-auth       - Build auth service"
+	@echo "  make build-stats      - Build stats service"
+	@echo "  make build-info       - Show which services can be built"
+	@echo ""
+	@echo "🐳 Service Management:"
+	@echo "  make <service>-up     - Start specific service (e.g., make postgres-up)"
+	@echo "  make <service>-down   - Stop specific service"
+	@echo "  make <service>-restart - Restart specific service"
+	@echo "  make <service>-logs   - View logs for specific service"
+	@echo ""
+	@echo "📦 Go Module Management:"
+	@echo "  make tidy             - Run go mod tidy on all Go services"
+	@echo "  make deps             - Download Go dependencies"
+	@echo "  make verify           - Verify Go modules"
+	@echo ""
+	@echo "👤 User Management:"
+	@echo "  make create-user      - Create new user (interactive)"
+	@echo "  make list-users       - List all users"
+	@echo ""
+	@echo "🧹 Cleanup Commands:"
+	@echo "  make clean            - Remove generated files and binaries"
+	@echo "  make clean-logs       - Clear Docker logs"
+	@echo "  make clean-images     - Remove Docker images"
+	@echo "  make clean-all        - Full cleanup (DESTRUCTIVE!)"
+	@echo "  make down-volumes     - Stop services and remove volumes (DESTRUCTIVE!)"
+	@echo ""
+	@echo "💾 Available Services:"
+	@echo "  - gateway-service     - API Gateway (port 8080)"
+	@echo "  - auth-service        - Authentication (port 8081)"
+	@echo "  - stats-service       - System Statistics (port 8082)"
+	@echo "  - postgres            - PostgreSQL Database (port 5432)"
+
 .PHONY: init
 init:
 	@python3 $(PYTHON_SCRIPT)
@@ -148,8 +195,13 @@ verify:
 # Remove generated files
 .PHONY: clean
 clean:
+	@echo "🧹 Cleaning generated files..."
 	rm -rf $(POSTGRES_INIT_DIR)
 	rm -rf gateway/ui-build
+	rm -f auth/auth-service
+	rm -f gateway/gateway-service
+	rm -f stats/stats-service
+	@echo "✅ Cleanup complete"
 
 # Clear all Docker images for services (DESTRUCTIVE!)
 .PHONY: clean-images

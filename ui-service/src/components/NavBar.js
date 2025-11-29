@@ -10,7 +10,7 @@ function NavBar() {
     const navigate = useNavigate();
     const location = useLocation();
     
-    const isHomePage = location.pathname === '/';
+    const isHomePage = location.pathname === '/' || location.pathname === '';
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -98,14 +98,14 @@ function NavBar() {
                     </li>
                     {user && (
                         <li className="item">
-                            <a className="link" href="/dashboard">
+                            <a className="link" href="/an/dashboard">
                                 Admin Console
                             </a>
                         </li>
                     )}
                     {!user && (
                         <li className="item login-item">
-                            <a className="link" href="/login">
+                            <a className="link" href="/an/login">
                                 Login
                             </a>
                         </li>

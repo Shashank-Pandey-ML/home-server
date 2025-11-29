@@ -95,7 +95,11 @@ func SecurityHeadersMiddleware() gin.HandlerFunc {
 		}
 
 		// Content security policy
-		c.Header("Content-Security-Policy", "default-src 'self'")
+		csp := "default-src 'self'; " +
+			"img-src 'self' data:;" +
+			"style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; " +
+			"font-src 'self' https://fonts.gstatic.com;"
+		c.Header("Content-Security-Policy", csp)
 
 		// Referrer policy
 		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")

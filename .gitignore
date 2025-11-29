@@ -45,6 +45,7 @@ docker-compose.override.yml
 # --- Service binaries ---
 auth/service
 gateway/service
+stats/service
 
 # --- Misc ---
 *.log.*

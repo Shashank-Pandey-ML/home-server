@@ -6,7 +6,7 @@ function About() {
             <div className="container text-center">
                 <div className="about">
                     <div className="about-img-holder">
-                        <img src="/ShashankProfileImg.jpeg" className="about-img" alt="Shashank Pandey" style={{ borderRadius: '15px' }} />
+                        <img src="/an/ShashankProfileImg.jpeg" className="about-img" alt="Shashank Pandey" style={{ borderRadius: '15px' }} />
                     </div>
                     <div className="about-caption">
                         <p className="section-subtitle">Who Am I ?</p>

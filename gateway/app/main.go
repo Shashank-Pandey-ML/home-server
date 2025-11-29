@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -49,13 +50,17 @@ func main() {
 	// Configure trusted proxies
 	router.SetTrustedProxies(nil)
 
+	router.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/an")
+	})
+
 	// Health check endpoint (no /api prefix for gateway health)
 	router.GET("/health", handlers.HealthHandler)
 
 	// API routes - All backend microservices under /api/v1
 	api := router.Group(config.AppConfig.API.BaseURL)
 	{
-		// Conditional auth middleware - skips auth for specific public endpoints
+		// Conditional auth middleware - skips auth for login
 		api.Use(gateway_middleware.ConditionalAuthMiddleware([]string{
 			"/api/v1/auth/login",
 			// "/api/v1/auth/public-key",
@@ -67,22 +72,14 @@ func main() {
 		// Auth service routes (all under /auth/*)
 		api.Any("/auth/*path", handlers.AuthServiceProxy)
 
-		// File service routes (protected - future)
-		api.Any("/files/*path", handlers.FileServiceProxy)
-
 		// Camera service routes (protected)
 		api.Any("/camera/*path", handlers.CameraServiceProxy)
 	}
 
-	// Serve static files (CSS, JS, images) from React build
-	router.Static("/static", "./ui-build/static")
-	router.StaticFile("/favicon.ico", "./ui-build/favicon.ico")
-	router.StaticFile("/manifest.json", "./ui-build/manifest.json")
-	router.StaticFile("/logo192.png", "./ui-build/logo192.png")
-	router.StaticFile("/logo512.png", "./ui-build/logo512.png")
-	router.StaticFile("/robots.txt", "./ui-build/robots.txt")
+	// Serve React build under /an
+	router.Static("/an", "./ui-build")
 
-	// Serve React app for all non-API routes (client-side routing)
+	// SPA fallback for /an/* routes (except static files)
 	router.NoRoute(handlers.ServeReactApp())
 
 	// Start the server
